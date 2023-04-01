@@ -54,10 +54,4 @@ $ python manage.py migrate TestModel   # 创建表结构
 浏览器打开: <code>http://127.0.0.1/admin</code> 即可进入超级用户入口
 
 
-## 感谢：
 
-感谢您的star
-
-### 联系：
-
-#GraduateDesign
