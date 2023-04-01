@@ -1,0 +1,276 @@
+{% extends 'base_foot.html' %}
+{#模板继承于base_foot#}
+
+{% block head %}
+    <script type="text/javascript" src="/static/js/register.js"></script>
+    <script type="text/javascript">
+    $(function(){
+
+	var error_name = false;
+	var error_password = false;
+	var error_check_password = false;
+	var error_email = false;
+	var error_check = false;
+
+
+	$('#user_name').blur(function() {
+		check_user_name();
+	});
+
+	$('#pwd').blur(function() {
+		check_pwd();
+	});
+
+	$('#cpwd').blur(function() {
+		check_cpwd();
+	});
+
+	$('#email').blur(function() {
+		check_email();
+	});
+
+	$('#allow').click(function() {
+		if($(this).is(':checked'))
+		{
+			error_check = false;
+			$(this).siblings('span').hide();
+		}
+		else
+		{
+			error_check = true;
+			$(this).siblings('span').html('请勾选同意');
+			$(this).siblings('span').show();
+		}
+	});
+
+
+	function check_user_name(){
+		var len = $('#user_name').val().length;
+
+		if(len<5||len>20)
+		{
+			$('#user_name').next().html('输入5-20个字符的用户名');
+			$('#user_name').next().show();
+			error_name = true;
+
+		}
+		else
+		{
+			$.get('{% url "df_user:register_exist" %}?uname='+$('#user_name').val(),function(data){
+                if (data.count >= 1) {
+                    $('#user_name').next().html('用户名已经存在').show();
+                    error_name = true;
+                }else{
+                    $('#user_name').next().hide();
+                    error_name = false;
+                }
+            });
+        }
+	}
+
+	function check_pwd(){
+		var len = $('#pwd').val().length;
+		if(len<4||len>20)
+		{
+			$('#pwd').next().html('密码最少4位，最长20位');
+			$('#pwd').next().show();
+			error_password = true;
+		}
+		else
+		{
+			$('#pwd').next().hide();
+			error_password = false;
+		}
+	}
+
+
+	function check_cpwd(){
+		var pass = $('#pwd').val();
+		var cpass = $('#cpwd').val();
+
+		if(pass!=cpass)
+		{
+			$('#cpwd').next().html('两次输入的密码不一致');
+			$('#cpwd').next().show();
+			error_check_password = true;
+		}
+		else
+		{
+			$('#cpwd').next().hide();
+			error_check_password = false;
+		}
+
+	}
+
+	function check_email(){
+		var re = /^[a-z0-9][\w\.\-]*@[a-z0-9\-]+(\.[a-z]{2,5}){1,2}$/;
+		if(!re.test($('#email').val()))
+		{
+		    $('#email').next().html('你输入的邮箱格式不正确');
+			$('#email').next().show();
+			error_email = true;
+		}
+		else
+		{
+			$.get('{% url "df_user:register_exist" %}?uemail='+$('#email').val(),function(data){
+                if (data.email_count >= 1) {
+                    $('#email').next().html('邮箱已经存在').show();
+                    error_email = true;
+                }else{
+                    $('#email').next().hide();
+                    error_email = false;
+                }
+            });
+		}
+
+	}
+
+
+	$('#reg_form').submit(function() {
+		check_user_name();
+		check_pwd();
+		check_cpwd();
+		check_email();
+
+		if(error_name == false && error_password == false && error_check_password == false && error_email == false && error_check == false)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	});
+});
+    </script>
+{% endblock head %}
+
+{% block body %}
+{#  协议  #}
+<div class="shadow clearfix" id="shadow">
+    <div class="close clearfix">
+        <div class="model clearfix">
+            <div class="site_con">
+                <p class="centerAlign" style="color:yellowgreen;text-align: center;font-size: 18px;">专辑交易网使用协议</p><br /><br />
+
+                    <tr>
+                        <td style="border: none; padding-left: 0;">
+                            一、甲方权利
+
+                                1.甲方拥有向乙方提供的任何技术支持、服务所包含的资料、信息、数据等的知识产权。
+
+                                2.甲方可自由引用、组织、提取以及修改乙方网站上已经直接或间接向互联网公开的内容。当然，甲方会标明信息来源﹐并遵守知识产权的相关规定。
+
+                                3.甲方依照乙方提交的申请中定制的服务规格向乙方提供相应服务。对乙方提出的超出该服务范围或不合理的要求，甲方有权拒绝;对乙方超范围使用甲方资源的行为，甲方有权采取任何措施予以制止，包括关闭乙方帐号、删除有关目录等，由此引起的一切后果均由乙方自行负责。
+
+                                4.甲方有权删除乙方网站中任何违反中国法律、法规、以及违反本服务条款等内容，或其他甲方认为不可接受的内容。
+                        </td><br /><br />
+                        <td style="border: none; padding-left: 0;">
+                            二、甲方义务
+
+                                1.甲方向乙方提供一定数量可以在互联网上发布特色网站主页的网络服务器磁盘空间，并进行日常维护
+
+                                2.尽力维护相关设备、软件，提供持续的、稳定的网站支持服务。除非，出现了停电、洪水等不可抗力以及为执行政府主管部门的禁令。
+
+                                3.未经过乙方同意，不对外公开乙方的私人信息内容，包括姓名、身份证号、或电话号码等等。除非相应的法律程序要求甲方提供上述信息。
+                        </td><br /><br />
+                        <td style="border: none; padding-left: 0;">
+                            三、乙方权利
+                                1.乙方根据甲方提供网站空间使用方法，自行管理服务器上所开设的服务器磁盘空间，并利用服务器磁盘空间在国际互联网上发布信息，以及自行决定文件的放置结构等。
+                                2.乙方可运用编程语言编写被允许放置的程序。
+                                3.乙方可享受甲方提供的免费网站空间和已授权的免费域名解释服务。
+
+                        </td><br /><br />
+                        <td style="border: none; padding-left: 0;">
+                            四、乙方的义务
+                                1.乙方必须遵守《计算机信息网络国际联网安全保护管理办法》《中华人民共和国计算机信息网络国际联网管理暂行规定》《中华人民共和国计算机信息系统安全保护条例》《中华人民共和国电信条例》《互联网信息服务管理办法》和国家其他有关法律、法规、条例，不得做任何违法经营活动。乙方对其行为和发布的信息违反上述规定而引起的任何而引起的政治责任，法律责任和给甲方造成的损失承担全部责任。
+                                2.乙方在登记时，需提供真实的、准确的、和完整的个人资料，并保持及时更新上述资料。乙方站点属个人的，需提供个人身份证复印件;乙方站点属单位的，需提供单位证明，并提供网站负责人资料。
+                                3.乙方站点只能发布为教育事业服务的信息内容，不能发布任何商业、房产等营利或非营利信息。
+
+                        </td><br /><br />
+                        <td style="border: none; padding-left: 0;">
+                            五、争议处理
+                                甲乙双方在出现违约或其它争议时，应本着有好协商,解决矛盾的原则来处理,尽量使事情
+                                有一个圆满的解决方案。如甲乙双方协商不成时，可采取以下方式 :
+                                1.变更和修改合同
+                                2.终止合作协议
+                                3.可向乙方所在的地方人民法院提出诉讼
+                        </td><br /><br />
+                    </tr>
+            </div>
+        </div>
+    </div>
+</div>
+
+{#  协议到此为止  #}
+	<div class="register_con">
+		<div class="l_con fl">
+			<a class="reg_logo"><img src="/static/images/register.png" style="width: 300px;height:100px;overflow: hidden;object-fit: cover;"></a>
+			<div class="reg_slogan">音乐·生活·未来</div>
+			<div class="reg_banner"><img src="/static/images/register_banner.jpg" style="width: 250px;height:330px;overflow: hidden;object-fit: cover;margin-right: 20px;"></div>
+		</div>
+
+		<div class="r_con fr">
+			<div class="reg_title clearfix">
+				<h1>用户注册</h1>
+				<a href="{% url "df_user:login" %}">登录</a>
+			</div>
+			<div class="reg_form clearfix">
+				<form action="{% url "df_user:register_handle" %}" id='reg_form' method="post">
+                    {% csrf_token %}
+				<ul>
+					<li>
+						<label>用户名:</label>
+						<input type="text" name="user_name" id="user_name">
+						<span class="error_tip">提示信息</span>
+					</li>
+					<li>
+						<label>密码:</label>
+						<input type="password" name="pwd" id="pwd">
+						<span class="error_tip">提示信息</span>
+					</li>
+					<li>
+						<label>确认密码:</label>
+						<input type="password" name="confirm_pwd" id="cpwd">
+						<span class="error_tip">提示信息</span>
+					</li>
+					<li>
+						<label>邮箱:</label>
+						<input type="text" name="email" id="email">
+						<span class="error_tip">提示信息</span>
+					</li>
+					<li class="agreement">
+						<input type="checkbox" name="allow" id="allow" checked="checked">
+						<label>同意<a href="javascript:void(0)" class="btn">《专辑交易使用协议》</a></label>
+						<span class="error_tip2">提示信息</span>
+					</li>
+					<li class="reg_sub">
+						<input type="submit" value="注 册">
+					</li>
+				</ul>				
+				</form>
+			</div>
+
+		</div>
+
+	</div>
+<script type="text/javascript">
+    let btn = document.getElementsByClassName('btn');
+    let shadow = document.getElementById('shadow');
+    for (var i = 0, len = btn.length; i < len; i++) {
+        btn[i].addEventListener('click', function (e) {
+            shadow.className = 'shadow show';
+            return false
+        }, false);
+        shadow.addEventListener('click', function(e) {
+          let target = e.target;
+          let _class = target.className;
+          if(_class.includes('shadow') || _class.includes('close')) {
+            shadow.className = 'shadow'
+          }
+          return false
+         }, false);
+    }
+</script>
+{% endblock body %}
